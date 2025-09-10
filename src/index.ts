@@ -283,6 +283,58 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
         },
       },
       {
+        name: 'add_plan',
+        description: 'Create a new test plan',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectId: {
+              type: 'number',
+              description: 'The ID of the project (optional: uses DEFAULT_PROJECT_ID if not provided)',
+            },
+            name: {
+              type: 'string',
+              description: 'The name of the test plan',
+            },
+            description: {
+              type: 'string',
+              description: 'Optional: Description of the test plan',
+            },
+            milestone_id: {
+              type: 'number',
+              description: 'Optional: The milestone ID',
+            },
+            entries: {
+              type: 'array',
+              description: 'Optional: Plan entries with suite configurations',
+              items: {
+                type: 'object',
+                properties: {
+                  suite_id: {
+                    type: 'number',
+                    description: 'The suite ID for this entry',
+                  },
+                  name: {
+                    type: 'string',
+                    description: 'Optional: Name for this entry (defaults to suite name)',
+                  },
+                  assignedto_id: {
+                    type: 'number',
+                    description: 'Optional: User ID to assign this entry to',
+                  },
+                  include_all: {
+                    type: 'boolean',
+                    description: 'Whether to include all test cases (default: true)',
+                  },
+                },
+                required: ['suite_id'],
+              },
+            },
+          },
+          required: ['name'],
+        },
+      },
+      {
         name: 'parse_testrail_url',
         description: 'Parse a TestRail URL and automatically call the appropriate tool',
         inputSchema: {
@@ -485,6 +537,25 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       case 'get_test_plan': {
         const { planId } = args as { planId: number };
         const testPlan = await testRailClient.getPlan(planId);
+        return {
+          content: [
+            {
+              type: 'text',
+              text: JSON.stringify(testPlan, null, 2),
+            },
+          ],
+        };
+      }
+
+      case 'add_plan': {
+        const { projectId, ...planData } = args as any;
+        const finalProjectId = projectId || testRailClient.getDefaultProjectId();
+        
+        if (!finalProjectId) {
+          throw new Error('No projectId provided and no DEFAULT_PROJECT_ID configured');
+        }
+        
+        const testPlan = await testRailClient.addPlan(finalProjectId, planData);
         return {
           content: [
             {

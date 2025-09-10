@@ -14,6 +14,7 @@ A Model Context Protocol (MCP) server that provides integration with TestRail, a
 - **add_test_result**: Add test results to test runs
 - **get_test_plans**: Retrieve test plans for a project
 - **get_test_plan**: Get details of a specific test plan
+- **add_plan**: Create new test plans
 - **get_users**: Retrieve TestRail users
 - **test_connection**: Test the connection to TestRail
 - **parse_testrail_url**: 🆕 Parse TestRail URLs and auto-call appropriate tools
@@ -165,6 +166,7 @@ This MCP server covers the following TestRail API endpoints:
 ### Test Plans
 - `GET /get_plans/{project_id}` - Get test plans
 - `GET /get_plan/{id}` - Get test plan details
+- `POST /add_plan/{project_id}` - Create test plan
 
 ### Suites & Sections
 - `GET /get_suites/{project_id}` - Get test suites
@@ -214,6 +216,32 @@ Simply paste any TestRail URL and get the data automatically:
     {
       "content": "Enter valid credentials",
       "expected": "User is logged in successfully"
+    }
+  ]
+}
+```
+
+### Creating a Test Plan
+
+```javascript
+// Using the add_plan tool
+{
+  "projectId": 123,
+  "name": "Release v2.0 Test Plan",
+  "description": "Comprehensive testing for version 2.0",
+  "milestone_id": 5,
+  "entries": [
+    {
+      "suite_id": 10,
+      "name": "Smoke Tests",
+      "assignedto_id": 15,
+      "include_all": true
+    },
+    {
+      "suite_id": 11,
+      "name": "Regression Tests",
+      "assignedto_id": 16,
+      "include_all": false
     }
   ]
 }
