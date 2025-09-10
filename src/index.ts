@@ -255,6 +255,34 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
         },
       },
       {
+        name: 'get_test_plans',
+        description: 'Get test plans for a project',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectId: {
+              type: 'number',
+              description: 'The ID of the project (optional: uses DEFAULT_PROJECT_ID if not provided)',
+            },
+          },
+          required: [],
+        },
+      },
+      {
+        name: 'get_test_plan',
+        description: 'Get a specific test plan by ID',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            planId: {
+              type: 'number',
+              description: 'The ID of the test plan',
+            },
+          },
+          required: ['planId'],
+        },
+      },
+      {
         name: 'parse_testrail_url',
         description: 'Parse a TestRail URL and automatically call the appropriate tool',
         inputSchema: {
@@ -435,6 +463,38 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         };
       }
 
+      case 'get_test_plans': {
+        const { projectId } = args as { projectId?: number };
+        const finalProjectId = projectId || testRailClient.getDefaultProjectId();
+        
+        if (!finalProjectId) {
+          throw new Error('No projectId provided and no DEFAULT_PROJECT_ID configured');
+        }
+        
+        const testPlans = await testRailClient.getPlans(finalProjectId);
+        return {
+          content: [
+            {
+              type: 'text',
+              text: JSON.stringify(testPlans, null, 2),
+            },
+          ],
+        };
+      }
+
+      case 'get_test_plan': {
+        const { planId } = args as { planId: number };
+        const testPlan = await testRailClient.getPlan(planId);
+        return {
+          content: [
+            {
+              type: 'text',
+              text: JSON.stringify(testPlan, null, 2),
+            },
+          ],
+        };
+      }
+
       case 'parse_testrail_url': {
         const { url } = args as { url: string };
         
@@ -583,6 +643,12 @@ server.setRequestHandler(ListResourcesRequestSchema, async () => {
         description: 'List of all TestRail users',
         mimeType: 'application/json',
       },
+      {
+        uri: 'testrail://plans',
+        name: 'TestRail Plans',
+        description: 'List of all TestRail test plans for the default project',
+        mimeType: 'application/json',
+      },
     ],
   };
 });
@@ -614,6 +680,24 @@ server.setRequestHandler(ReadResourceRequestSchema, async (request) => {
               uri,
               mimeType: 'application/json',
               text: JSON.stringify(users, null, 2),
+            },
+          ],
+        };
+      }
+
+      case 'testrail://plans': {
+        const defaultProjectId = testRailClient.getDefaultProjectId();
+        if (!defaultProjectId) {
+          throw new Error('No DEFAULT_PROJECT_ID configured for plans resource');
+        }
+        
+        const plans = await testRailClient.getPlans(defaultProjectId);
+        return {
+          contents: [
+            {
+              uri,
+              mimeType: 'application/json',
+              text: JSON.stringify(plans, null, 2),
             },
           ],
         };

@@ -9,6 +9,7 @@ import {
   TestRailUser,
   TestRailMilestone,
   TestRailSection,
+  TestRailPlan,
 } from './types.js';
 
 export class TestRailClient {
@@ -154,6 +155,17 @@ export class TestRailClient {
 
   async getMilestone(milestoneId: number): Promise<TestRailMilestone> {
     const response: AxiosResponse<TestRailMilestone> = await this.api.get(`/get_milestone/${milestoneId}`);
+    return response.data;
+  }
+
+  // Test Plans
+  async getPlans(projectId: number): Promise<TestRailPlan[]> {
+    const response: AxiosResponse<{ plans: TestRailPlan[] }> = await this.api.get(`/get_plans/${projectId}`);
+    return response.data.plans;
+  }
+
+  async getPlan(planId: number): Promise<TestRailPlan> {
+    const response: AxiosResponse<TestRailPlan> = await this.api.get(`/get_plan/${planId}`);
     return response.data;
   }
 

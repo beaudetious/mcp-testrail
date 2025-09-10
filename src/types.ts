@@ -126,3 +126,37 @@ export interface TestRailSection {
   display_order: number;
   depth: number;
 }
+
+export interface TestRailPlan {
+  id: number;
+  name: string;
+  description?: string;
+  milestone_id?: number;
+  assignedto_id?: number;
+  is_completed: boolean;
+  completed_on?: number;
+  passed_count: number;
+  blocked_count: number;
+  untested_count: number;
+  retest_count: number;
+  failed_count: number;
+  custom_status1_count: number;
+  custom_status2_count: number;
+  custom_status3_count: number;
+  custom_status4_count: number;
+  custom_status5_count: number;
+  custom_status6_count: number;
+  custom_status7_count: number;
+  project_id: number;
+  created_on: number;
+  created_by: number;
+  url: string;
+  entries?: TestRailPlanEntry[];
+}
+
+export interface TestRailPlanEntry {
+  id: string;
+  suite_id: number;
+  name: string;
+  runs: TestRailTestRun[];
+}
