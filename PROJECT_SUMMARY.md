@@ -25,7 +25,7 @@ mcp-testrail/
 
 ## 🚀 Features Implemented
 
-### 🛠️ Tools (10 total)
+### 🛠️ Tools (12 total)
 1. **get_projects** - Retrieve all TestRail projects
 2. **get_project** - Get specific project details
 3. **get_test_cases** - Retrieve test cases with optional filtering
@@ -33,12 +33,16 @@ mcp-testrail/
 5. **get_test_runs** - Retrieve test runs for projects
 6. **create_test_run** - Create new test runs
 7. **add_test_result** - Add test results to runs
-8. **get_users** - Retrieve TestRail users
-9. **test_connection** - Test TestRail connectivity
+8. **get_test_plans** - Retrieve test plans for projects
+9. **get_test_plan** - Get specific test plan details
+10. **get_users** - Retrieve TestRail users
+11. **test_connection** - Test TestRail connectivity
+12. **parse_testrail_url** - Parse TestRail URLs and auto-call appropriate tools
 
-### 📚 Resources (2 total)
+### 📚 Resources (3 total)
 1. **testrail://projects** - Access to all projects
 2. **testrail://users** - Access to all users
+3. **testrail://plans** - Access to all test plans for default project
 
 ### 💡 Prompts (2 total)
 1. **test_case_template** - Generate test case templates
@@ -73,6 +77,8 @@ mcp-testrail/
 - ✅ POST /add_result_for_case/{run_id}/{case_id}
 - ✅ GET /get_users
 - ✅ GET /get_user/{id}
+- ✅ GET /get_plans/{project_id}
+- ✅ GET /get_plan/{id}
 - ✅ GET /get_suites/{project_id}
 - ✅ GET /get_sections/{project_id}
 - ✅ GET /get_milestones/{project_id}
@@ -153,10 +159,10 @@ The MCP server is fully functional and ready for use with:
 
 ## 🎉 Success Metrics
 
-- ✅ 10 functional tools implemented
-- ✅ 2 resource endpoints working
+- ✅ 12 functional tools implemented
+- ✅ 3 resource endpoints working
 - ✅ 2 prompt templates created
-- ✅ 18+ TestRail API endpoints covered
+- ✅ 20+ TestRail API endpoints covered
 - ✅ Zero compilation errors
 - ✅ Complete type safety
 - ✅ Production-ready build system 
