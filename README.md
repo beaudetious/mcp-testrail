@@ -15,6 +15,7 @@ A Model Context Protocol (MCP) server that provides integration with TestRail, a
 - **get_test_plans**: Retrieve test plans for a project
 - **get_test_plan**: Get details of a specific test plan
 - **add_plan**: Create new test plans
+- **add_plan_entry**: Add test runs to existing test plans
 - **get_users**: Retrieve TestRail users
 - **test_connection**: Test the connection to TestRail
 - **parse_testrail_url**: 🆕 Parse TestRail URLs and auto-call appropriate tools
@@ -167,6 +168,7 @@ This MCP server covers the following TestRail API endpoints:
 - `GET /get_plans/{project_id}` - Get test plans
 - `GET /get_plan/{id}` - Get test plan details
 - `POST /add_plan/{project_id}` - Create test plan
+- `POST /add_plan_entry/{plan_id}` - Add entry to test plan
 
 ### Suites & Sections
 - `GET /get_suites/{project_id}` - Get test suites
@@ -242,6 +244,39 @@ Simply paste any TestRail URL and get the data automatically:
       "name": "Regression Tests",
       "assignedto_id": 16,
       "include_all": false
+    }
+  ]
+}
+```
+
+### Adding Plan Entry
+
+```javascript
+// Using the add_plan_entry tool - Basic example with specific test cases
+{
+  "planId": 342,
+  "suite_id": 9,
+  "name": "Regression Tests - Sprint 5",
+  "assignedto_id": 6,
+  "include_all": false,
+  "case_ids": [2904, 2915, 5202, 5251, 5255, 5694, 13920, 131890]
+}
+
+// Example with multiple configurations
+{
+  "planId": 123,
+  "suite_id": 10,
+  "name": "Cross-browser Testing",
+  "config_ids": [1, 2],
+  "runs": [
+    {
+      "config_id": 1,
+      "include_all": false,
+      "case_ids": [101, 102, 103]
+    },
+    {
+      "config_id": 2,
+      "include_all": true
     }
   ]
 }

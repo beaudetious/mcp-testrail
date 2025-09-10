@@ -335,6 +335,78 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
         },
       },
       {
+        name: 'add_plan_entry',
+        description: 'Add a new test run entry to a test plan',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            planId: {
+              type: 'number',
+              description: 'The ID of the test plan to add the entry to',
+            },
+            suite_id: {
+              type: 'number',
+              description: 'The suite ID for this entry',
+            },
+            name: {
+              type: 'string',
+              description: 'Optional: Name for this entry (defaults to suite name)',
+            },
+            description: {
+              type: 'string',
+              description: 'Optional: Description for the test run',
+            },
+            assignedto_id: {
+              type: 'number',
+              description: 'Optional: User ID to assign this entry to',
+            },
+            include_all: {
+              type: 'boolean',
+              description: 'Whether to include all test cases (default: true)',
+            },
+            case_ids: {
+              type: 'array',
+              description: 'Optional: Array of case IDs to include (only used if include_all is false)',
+              items: {
+                type: 'number',
+              },
+            },
+            config_ids: {
+              type: 'array',
+              description: 'Optional: Array of configuration IDs for multiple test runs with different configurations',
+              items: {
+                type: 'number',
+              },
+            },
+            runs: {
+              type: 'array',
+              description: 'Optional: Array of run configurations when using multiple configurations',
+              items: {
+                type: 'object',
+                properties: {
+                  config_id: {
+                    type: 'number',
+                    description: 'Configuration ID for this run',
+                  },
+                  include_all: {
+                    type: 'boolean',
+                    description: 'Whether to include all test cases for this configuration',
+                  },
+                  case_ids: {
+                    type: 'array',
+                    description: 'Array of case IDs to include for this configuration',
+                    items: {
+                      type: 'number',
+                    },
+                  },
+                },
+              },
+            },
+          },
+          required: ['planId', 'suite_id'],
+        },
+      },
+      {
         name: 'parse_testrail_url',
         description: 'Parse a TestRail URL and automatically call the appropriate tool',
         inputSchema: {
@@ -561,6 +633,20 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             {
               type: 'text',
               text: JSON.stringify(testPlan, null, 2),
+            },
+          ],
+        };
+      }
+
+      case 'add_plan_entry': {
+        const { planId, ...entryData } = args as any;
+        
+        const planEntry = await testRailClient.addPlanEntry(planId, entryData);
+        return {
+          content: [
+            {
+              type: 'text',
+              text: JSON.stringify(planEntry, null, 2),
             },
           ],
         };

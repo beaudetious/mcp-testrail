@@ -10,6 +10,7 @@ import {
   TestRailMilestone,
   TestRailSection,
   TestRailPlan,
+  TestRailPlanEntry,
 } from './types.js';
 
 export class TestRailClient {
@@ -171,6 +172,11 @@ export class TestRailClient {
 
   async addPlan(projectId: number, data: Partial<TestRailPlan>): Promise<TestRailPlan> {
     const response: AxiosResponse<TestRailPlan> = await this.api.post(`/add_plan/${projectId}`, data);
+    return response.data;
+  }
+
+  async addPlanEntry(planId: number, data: Partial<TestRailPlanEntry>): Promise<TestRailPlanEntry> {
+    const response: AxiosResponse<TestRailPlanEntry> = await this.api.post(`/add_plan_entry/${planId}`, data);
     return response.data;
   }
 
