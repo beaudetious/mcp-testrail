@@ -407,6 +407,36 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
         },
       },
       {
+        name: 'update_plan',
+        description: 'Update an existing test plan (supports partial updates)',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            planId: {
+              type: 'number',
+              description: 'The ID of the test plan to update',
+            },
+            name: {
+              type: 'string',
+              description: 'Optional: The name of the test plan',
+            },
+            description: {
+              type: 'string',
+              description: 'Optional: Description of the test plan',
+            },
+            milestone_id: {
+              type: 'number',
+              description: 'Optional: The milestone ID to assign to the plan',
+            },
+            assignedto_id: {
+              type: 'number',
+              description: 'Optional: User ID to assign the plan to',
+            },
+          },
+          required: ['planId'],
+        },
+      },
+      {
         name: 'parse_testrail_url',
         description: 'Parse a TestRail URL and automatically call the appropriate tool',
         inputSchema: {
@@ -647,6 +677,20 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             {
               type: 'text',
               text: JSON.stringify(planEntry, null, 2),
+            },
+          ],
+        };
+      }
+
+      case 'update_plan': {
+        const { planId, ...planData } = args as any;
+        
+        const updatedPlan = await testRailClient.updatePlan(planId, planData);
+        return {
+          content: [
+            {
+              type: 'text',
+              text: JSON.stringify(updatedPlan, null, 2),
             },
           ],
         };

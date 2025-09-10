@@ -16,6 +16,7 @@ A Model Context Protocol (MCP) server that provides integration with TestRail, a
 - **get_test_plan**: Get details of a specific test plan
 - **add_plan**: Create new test plans
 - **add_plan_entry**: Add test runs to existing test plans
+- **update_plan**: Update existing test plans (supports partial updates)
 - **get_users**: Retrieve TestRail users
 - **test_connection**: Test the connection to TestRail
 - **parse_testrail_url**: 🆕 Parse TestRail URLs and auto-call appropriate tools
@@ -169,6 +170,7 @@ This MCP server covers the following TestRail API endpoints:
 - `GET /get_plan/{id}` - Get test plan details
 - `POST /add_plan/{project_id}` - Create test plan
 - `POST /add_plan_entry/{plan_id}` - Add entry to test plan
+- `POST /update_plan/{plan_id}` - Update test plan
 
 ### Suites & Sections
 - `GET /get_suites/{project_id}` - Get test suites
@@ -279,6 +281,24 @@ Simply paste any TestRail URL and get the data automatically:
       "include_all": true
     }
   ]
+}
+```
+
+### Updating Plan
+
+```javascript
+// Using the update_plan tool - Update specific fields only
+{
+  "planId": 123,
+  "name": "Updated Release v2.1 Test Plan",
+  "description": "Updated comprehensive testing for version 2.1",
+  "milestone_id": 6
+}
+
+// Partial update example - just change assignee
+{
+  "planId": 456,
+  "assignedto_id": 12
 }
 ```
 

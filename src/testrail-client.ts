@@ -180,6 +180,11 @@ export class TestRailClient {
     return response.data;
   }
 
+  async updatePlan(planId: number, data: Partial<TestRailPlan>): Promise<TestRailPlan> {
+    const response: AxiosResponse<TestRailPlan> = await this.api.post(`/update_plan/${planId}`, data);
+    return response.data;
+  }
+
   // Utility methods
   async testConnection(): Promise<boolean> {
     try {
